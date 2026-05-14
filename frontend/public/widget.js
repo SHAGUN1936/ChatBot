@@ -31,7 +31,7 @@
   // Create iframe
   const iframe = document.createElement("iframe");
 
-  iframe.src = "http://localhost:5173";
+  iframe.src = "https://chat-bot-z3i1.vercel.app";
 
   Object.assign(iframe.style, {
     position: "fixed",
