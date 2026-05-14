@@ -7,23 +7,29 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-app.post("/chat", async (req, res) => {
+app.post(["/chat", "/_/backend/chat", "/api/chat"], async (req, res) => {
   try {
     const { message } = req.body;
 
-    const aiEndpoint = process.env.AI_API_URL || "https://chat-bot-z3i1.vercel.app/api/generate";
+    const aiEndpoint = process.env.AI_API_URL || "https://api.groq.com/openai/v1/chat/completions";
+    const apiKey = process.env.GROQ_API_KEY|| process.env.AI_API_KEY || "";
 
     const response = await axios.post(
       aiEndpoint,
       {
-        model: "llama3",
-        prompt: message,
-        stream: false,
+        model: "llama3-8b-8192", // Groq's free LLaMA-3 model name
+        messages: [{ role: "user", content: message }],
+      },
+      {
+        headers: {
+          "Authorization": `Bearer ${apiKey}`,
+          "Content-Type": "application/json"
+        }
       }
     );
 
     res.json({
-      reply: response.data.response,
+      reply: response.data.choices[0].message.content,
     });
   } catch (error) {
     console.log(error);
