@@ -44,7 +44,7 @@ function App() {
 
     try {
       const res = await axios.post(
-        "https://chat-bot-z3i1.vercel.app/_/backend/chat",
+        "/_/backend/chat",
         {
           message: currentMessage,
         }
@@ -350,7 +350,6 @@ const styles = {
 
   input: {
     flex: 1,
-    border: "none",
     outline: "none",
     background:
       "rgba(255,255,255,0.06)",

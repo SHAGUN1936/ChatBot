@@ -28,10 +28,17 @@
 
   document.body.appendChild(button);
 
+  // Determine base URL from current script
+  const scriptTag = document.currentScript;
+  let widgetOrigin = "https://chat-bot-z3i1.vercel.app";
+  if (scriptTag && scriptTag.src) {
+    widgetOrigin = new URL(scriptTag.src).origin;
+  }
+
   // Create iframe
   const iframe = document.createElement("iframe");
 
-  iframe.src = "https://chat-bot-z3i1.vercel.app";
+  iframe.src = widgetOrigin;
 
   Object.assign(iframe.style, {
     position: "fixed",

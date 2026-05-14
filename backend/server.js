@@ -11,8 +11,10 @@ app.post("/chat", async (req, res) => {
   try {
     const { message } = req.body;
 
+    const aiEndpoint = process.env.AI_API_URL || "https://chat-bot-z3i1.vercel.app/api/generate";
+
     const response = await axios.post(
-      "https://chat-bot-z3i1.vercel.app/api/generate",
+      aiEndpoint,
       {
         model: "llama3",
         prompt: message,
@@ -32,6 +34,13 @@ app.post("/chat", async (req, res) => {
   }
 });
 
-app.listen(5000, () => {
-  console.log("Server running on port 5000");
-});
+// Export the app for Vercel Serverless
+module.exports = app;
+
+// Only listen if not running in a serverless environment
+if (require.main === module) {
+  const PORT = process.env.PORT || 5000;
+  app.listen(PORT, () => {
+    console.log(`Server running on port ${PORT}`);
+  });
+}
