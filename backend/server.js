@@ -11,25 +11,36 @@ app.post(["/chat", "/_/backend/chat", "/api/chat"], async (req, res) => {
   try {
     const { message } = req.body;
 
-    const aiEndpoint = process.env.AI_API_URL || "https://api.groq.com/openai/v1/chat/completions";
-    const apiKey = process.env.GROQ_API_KEY|| process.env.AI_API_KEY || "";
+    const apiKey = process.env.GROQ_API_KEY || process.env.AI_API_KEY || "";
+    
+    let replyText = "";
 
-    const response = await axios.post(
-      aiEndpoint,
-      {
-        model: "llama3-8b-8192", // Groq's free LLaMA-3 model name
-        messages: [{ role: "user", content: message }],
-      },
-      {
-        headers: {
-          "Authorization": `Bearer ${apiKey}`,
-          "Content-Type": "application/json"
+    if (!apiKey) {
+      // Fallback to a free, no-key AI API if the user hasn't set up Groq
+      const response = await axios.post("https://text.pollinations.ai/", {
+        messages: [{ role: "user", content: message }]
+      });
+      replyText = response.data;
+    } else {
+      const aiEndpoint = process.env.AI_API_URL || "https://api.groq.com/openai/v1/chat/completions";
+      const response = await axios.post(
+        aiEndpoint,
+        {
+          model: "llama3-8b-8192", 
+          messages: [{ role: "user", content: message }],
+        },
+        {
+          headers: {
+            "Authorization": `Bearer ${apiKey}`,
+            "Content-Type": "application/json"
+          }
         }
-      }
-    );
+      );
+      replyText = response.data.choices[0].message.content;
+    }
 
     res.json({
-      reply: response.data.choices[0].message.content,
+      reply: replyText,
     });
   } catch (error) {
     console.log(error);
