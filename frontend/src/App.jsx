@@ -44,7 +44,7 @@ function App() {
 
     try {
       const res = await axios.post(
-        "https://chat-bot-z3i1.vercel.app/chat",
+        "https://chat-bot-z3i1.vercel.app/api/chat",
         {
           message: currentMessage,
         }
