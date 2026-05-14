@@ -12,7 +12,7 @@ app.post("/chat", async (req, res) => {
     const { message } = req.body;
 
     const response = await axios.post(
-      "http://localhost:11434/api/generate",
+      "https://chat-bot-z3i1.vercel.app/api/generate",
       {
         model: "llama3",
         prompt: message,
